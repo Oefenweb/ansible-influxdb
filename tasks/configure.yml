@@ -1,0 +1,43 @@
+# tasks file for ubuntu-1604-influxdb
+---
+- name: configure | query show databases
+  uri:
+    url: "http://localhost:8086/query?q={{ 'SHOW DATABASES' | urlencode }}"
+    method: 'POST'
+    return_content: true
+    user: "{{ ubuntu_1604_influxdb_admin_username | default(omit) }}"
+    password: "{{ ubuntu_1604_influxdb_admin_password | default(omit) }}"
+    status_code: 200
+  register: _check_list_databases
+
+- name: configure | show databases
+  set_fact:
+    _check_list_database: "{{ item }}"
+  with_items: _check_list_databases['json']['results'][0]['series'][0]['values']
+  register: _check_list_databases
+
+- name: configure | convert show databases to list
+  set_fact:
+    _check_list_databases: "{{ _check_list_databases.results | map(attribute='ansible_facts._check_list_database') | list }}"
+
+- name: configure | create databases
+  uri:
+    url: "http://localhost:8086/query?q={{ ('CREATE DATABASE ' + item.name + (' WITH DURATION ' + item.duration if item.duration is defined else '') ) | urlencode }}"
+    method: 'POST'
+    user: "{{ ubuntu_1604_influxdb_admin_username | default(omit) }}"
+    password: "{{ ubuntu_1604_influxdb_admin_password | default(omit) }}"
+    status_code: 200
+  changed_when: true
+  with_items: "{{ ubuntu_1604_influxdb_databases_present }}"
+  when: item.name not in _check_list_databases
+
+- name: configure | drop databases
+  uri:
+    url: "http://localhost:8086/query?q={{ ('DROP DATABASE ' + item) | urlencode }}"
+    method: 'POST'
+    user: "{{ ubuntu_1604_influxdb_admin_username | default(omit) }}"
+    password: "{{ ubuntu_1604_influxdb_admin_password | default(omit) }}"
+    status_code: 200
+  changed_when: true
+  with_items: "{{ ubuntu_1604_influxdb_databases_absent }}"
+  when: item in _check_list_databases

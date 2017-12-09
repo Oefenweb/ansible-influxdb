@@ -1,0 +1,5 @@
+# vars file for ubuntu-1604-influxdb
+---
+ubuntu_1604_influxdb_install:
+  - python-httplib2
+  - influxdb

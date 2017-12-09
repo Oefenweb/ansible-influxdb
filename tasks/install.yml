@@ -1,0 +1,15 @@
+# tasks file for ubuntu-1604-influxdb
+---
+- name: install | install signing key of repository
+  apt_key:
+    id: 2582E0C5
+    url: 'https://repos.influxdata.com/influxdb.key'
+
+- name: install | add repository
+  apt_repository:
+    repo: 'deb https://repos.influxdata.com/ubuntu xenial stable'
+
+- name: install | packages
+  apt:
+    name: "{{ item }}"
+  with_items: "{{ ubuntu_1604_influxdb_install }}"

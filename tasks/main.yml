@@ -1,0 +1,12 @@
+# tasks file for ubuntu-1604-influxdb
+---
+
+- include: install.yml
+
+- name: start and enable service
+  service:
+    name: influxdb
+    state: started
+    enabled: true
+
+- include: configure.yml
