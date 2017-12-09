@@ -8,8 +8,8 @@ boxes = [
     :name => "ubuntu-1604",
     :box => "ubuntu/xenial64",
     :ip => '10.0.0.12',
-    :cpu => "100",
-    :ram => "1024"
+    :cpu => "50",
+    :ram => "256"
   }
 ]
 
