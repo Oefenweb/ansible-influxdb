@@ -1,12 +1,33 @@
-# tasks file for ubuntu-1604-influxdb
+# tasks file for influxdb
 ---
+- include: repository.yml
+  tags:
+    - configuration
+    - influxdb
+    - influxdb-repository
 
 - include: install.yml
+  tags:
+    - configuration
+    - influxdb
+    - influxdb-install
+
+#- include: configure.yml
+#  tags:
+#    - configuration
+#    - influxdb
+#    - influxdb-configure
+
+- include: databases.yml
+  tags:
+    - configuration
+    - influxdb
+    - influxdb-databases
 
 - name: start and enable service
   service:
     name: influxdb
-    state: started
-    enabled: true
-
-- include: configure.yml
+    state: "{{ service_default_state | default('started') }}"
+    enabled: "{{ service_default_enabled | default(true) | bool }}"
+  tags:
+    - influxdb-start-enable-service

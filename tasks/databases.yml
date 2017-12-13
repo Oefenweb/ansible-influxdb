@@ -1,0 +1,43 @@
+# tasks file for influxdb
+---
+- name: databases | query show
+  uri:
+    url: "http://localhost:8086/query?q={{ 'SHOW DATABASES' | urlencode }}"
+    method: 'POST'
+    return_content: true
+    user: "{{ influxdb_admin_username | default(omit) }}"
+    password: "{{ influxdb_admin_password | default(omit) }}"
+    status_code: 200
+  register: _check_list_databases
+
+- name: databases | show
+  set_fact:
+    _check_list_database: "{{ item }}"
+  with_items: _check_list_databases['json']['results'][0]['series'][0]['values']
+  register: _check_list_databases
+
+- name: databases | show -> list
+  set_fact:
+    _check_list_databases: "{{ _check_list_databases.results | map(attribute='ansible_facts._check_list_database') | list }}"
+
+- name: databases | create
+  uri:
+    url: "http://localhost:8086/query?q={{ ('CREATE DATABASE ' + item.name + (' WITH DURATION ' + item.duration if item.duration is defined else '') ) | urlencode }}"
+    method: 'POST'
+    user: "{{ influxdb_admin_username | default(omit) }}"
+    password: "{{ influxdb_admin_password | default(omit) }}"
+    status_code: 200
+  changed_when: true
+  with_items: "{{ influxdb_databases_present }}"
+  when: item.name not in _check_list_databases
+
+- name: databases | drop
+  uri:
+    url: "http://localhost:8086/query?q={{ ('DROP DATABASE ' + item) | urlencode }}"
+    method: 'POST'
+    user: "{{ influxdb_admin_username | default(omit) }}"
+    password: "{{ influxdb_admin_password | default(omit) }}"
+    status_code: 200
+  changed_when: true
+  with_items: "{{ influxdb_databases_absent }}"
+  when: item in _check_list_databases

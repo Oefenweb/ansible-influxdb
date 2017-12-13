@@ -1,5 +1,6 @@
-# defaults file for ubuntu-1604-influxdb
+# defaults file for influxdb
 ---
-ubuntu_1604_influxdb_databases_present: []
+influxdb_install: []
 
-ubuntu_1604_influxdb_databases_absent: []
+influxdb_databases_present: []
+influxdb_databases_absent: []

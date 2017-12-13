@@ -1,0 +1,7 @@
+# handlers file for influxdb
+---
+- name: restart influxdb
+  service:
+    name: influxdb
+    state: restarted
+  when: service_default_state | default('started') == 'started'

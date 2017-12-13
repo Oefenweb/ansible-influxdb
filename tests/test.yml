@@ -1,7 +1,9 @@
-# test file for ubuntu-1604-influxdb
+# test file for influxdb
 ---
 - hosts: localhost
   connection: local
   become: true
   roles:
     - ../../
+  post_tasks:
+    - include: post.yml

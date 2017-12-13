@@ -1,15 +1,25 @@
-# tasks file for ubuntu-1604-influxdb
+# tasks file for influxdb
 ---
-- name: install | install signing key of repository
-  apt_key:
-    id: 2582E0C5
-    url: 'https://repos.influxdata.com/influxdb.key'
-
-- name: install | add repository
-  apt_repository:
-    repo: 'deb https://repos.influxdata.com/ubuntu xenial stable'
-
-- name: install | packages
+- name: install | dependencies
   apt:
     name: "{{ item }}"
-  with_items: "{{ ubuntu_1604_influxdb_install }}"
+    state: "{{ apt_install_state | default('latest') }}"
+  with_items: "{{ influxdb_dependencies }}"
+  tags:
+    - influxdb-install-dependencies
+
+- name: install | dependencies | check service
+  service:
+    name: influxdb
+    state: started
+  tags:
+    - influxdb-install-dependencies
+    - influxdb-install-dependencies-check
+
+- name: install | additional
+  apt:
+    name: "{{ item }}"
+    state: "{{ apt_install_state | default('latest') }}"
+  with_items: "{{ influxdb_install }}"
+  tags:
+    - influxdb-install-additional

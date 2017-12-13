@@ -1,43 +1,52 @@
-# tasks file for ubuntu-1604-influxdb
+# tasks file for influxdb
 ---
-- name: configure | query show databases
-  uri:
-    url: "http://localhost:8086/query?q={{ 'SHOW DATABASES' | urlencode }}"
-    method: 'POST'
-    return_content: true
-    user: "{{ ubuntu_1604_influxdb_admin_username | default(omit) }}"
-    password: "{{ ubuntu_1604_influxdb_admin_password | default(omit) }}"
-    status_code: 200
-  register: _check_list_databases
+- name: configure | stat directories
+  stat:
+    path: "{{ item }}/"
+  register: _stat_directories
+  with_items:
+    - "{{ influxdb_influxdb_home }}"
+    - "{{ influxdb_log_dir }}"
+    - "{{ influxdb_data_dir }}"
+    - "{{ influxdb_conf_dir }}"
+    - "{{ influxdb_plugins_dir }}"
+    - "{{ influxdb_pid_file_dir }}"
+  tags:
+    - influxdb-configure-directories
+    - influxdb-configure-directories-stat
 
-- name: configure | show databases
-  set_fact:
-    _check_list_database: "{{ item }}"
-  with_items: _check_list_databases['json']['results'][0]['series'][0]['values']
-  register: _check_list_databases
+- name: configure | create directories
+  file:
+    path: "{{ item.item }}"
+    state: directory
+    owner: "{{ influxdb_influxdb_user }}"
+    group: "{{ influxdb_influxdb_group }}"
+    mode: 0755
+  with_items: "{{ _stat_directories.results }}"
+  when: item.stat.exists == false
+  tags:
+    - influxdb-configure-directories
+    - influxdb-configure-directories-create
 
-- name: configure | convert show databases to list
-  set_fact:
-    _check_list_databases: "{{ _check_list_databases.results | map(attribute='ansible_facts._check_list_database') | list }}"
-
-- name: configure | create databases
-  uri:
-    url: "http://localhost:8086/query?q={{ ('CREATE DATABASE ' + item.name + (' WITH DURATION ' + item.duration if item.duration is defined else '') ) | urlencode }}"
-    method: 'POST'
-    user: "{{ ubuntu_1604_influxdb_admin_username | default(omit) }}"
-    password: "{{ ubuntu_1604_influxdb_admin_password | default(omit) }}"
-    status_code: 200
-  changed_when: true
-  with_items: "{{ ubuntu_1604_influxdb_databases_present }}"
-  when: item.name not in _check_list_databases
-
-- name: configure | drop databases
-  uri:
-    url: "http://localhost:8086/query?q={{ ('DROP DATABASE ' + item) | urlencode }}"
-    method: 'POST'
-    user: "{{ ubuntu_1604_influxdb_admin_username | default(omit) }}"
-    password: "{{ ubuntu_1604_influxdb_admin_password | default(omit) }}"
-    status_code: 200
-  changed_when: true
-  with_items: "{{ ubuntu_1604_influxdb_databases_absent }}"
-  when: item in _check_list_databases
+- name: configure | update configuration files
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode }}"
+  notify: restart influxdb
+  with_items:
+    - src: etc/influxdb/influxdb.ini.j2
+      dest: "{{ influxdb_conf_file }}"
+      owner: root
+      group: "{{ influxdb_influxdb_group }}"
+      mode: '0640'
+    - src: etc/default/influxdb-server.j2
+      dest: /etc/default/influxdb-server
+      owner: root
+      group: root
+      mode: '0644'
+  tags:
+    - influxdb-configure-configuration
+    - influxdb-configure-configuration-files
