@@ -7,3 +7,7 @@
     - ../../
   post_tasks:
     - include: post.yml
+  vars:
+    influxdb_databases_present:
+      - name: foo
+      - name: bar

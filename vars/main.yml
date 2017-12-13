@@ -5,7 +5,7 @@ influxdb_dependencies_pre:
   - ca-certificates
 
 influxdb_apt_keys:
-  - id: 2582E0C5
+  - id: 684A14CF2582E0C5
     url: https://repos.influxdata.com/influxdb.key
 
 influxdb_repositories:

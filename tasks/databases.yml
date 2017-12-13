@@ -3,22 +3,20 @@
 - name: databases | query show
   uri:
     url: "http://localhost:8086/query?q={{ 'SHOW DATABASES' | urlencode }}"
-    method: 'POST'
+    method: POST
     return_content: true
     user: "{{ influxdb_admin_username | default(omit) }}"
     password: "{{ influxdb_admin_password | default(omit) }}"
     status_code: 200
-  register: _check_list_databases
+  register: _show_databases
+  tags:
+    - influxdb-databases-query-show
 
-- name: databases | show
+- name: databases | set show
   set_fact:
-    _check_list_database: "{{ item }}"
-  with_items: _check_list_databases['json']['results'][0]['series'][0]['values']
-  register: _check_list_databases
-
-- name: databases | show -> list
-  set_fact:
-    _check_list_databases: "{{ _check_list_databases.results | map(attribute='ansible_facts._check_list_database') | list }}"
+    _databases_present: "{{ _show_databases['json']['results'][0]['series'][0]['values'] | map(attribute=0) | list }}"
+  tags:
+    - influxdb-databases-set-show
 
 - name: databases | create
   uri:
@@ -29,7 +27,9 @@
     status_code: 200
   changed_when: true
   with_items: "{{ influxdb_databases_present }}"
-  when: item.name not in _check_list_databases
+  when: item.name not in _databases_present
+  tags:
+    - influxdb-databases-create
 
 - name: databases | drop
   uri:
@@ -40,4 +40,6 @@
     status_code: 200
   changed_when: true
   with_items: "{{ influxdb_databases_absent }}"
-  when: item in _check_list_databases
+  when: item in _databases_present
+  tags:
+    - influxdb-databases-drop
