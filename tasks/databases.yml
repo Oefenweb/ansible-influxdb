@@ -12,9 +12,10 @@
   tags:
     - influxdb-databases-query-show
 
+# TODO: Use json query?
 - name: databases | set show
   set_fact:
-    _databases_present: "{{ _show_databases['json']['results'][0]['series'][0]['values'] | map(attribute=0) | list }}"
+    _databases_present: "{{ _show_databases['json']['results'][0]['series'][0]['values'] | default({values: [[]]}) | map(attribute=0) | list }}"
   tags:
     - influxdb-databases-set-show
 

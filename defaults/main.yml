@@ -4,3 +4,7 @@ influxdb_install: []
 
 influxdb_databases_present: []
 influxdb_databases_absent: []
+
+influxdb_etc_default: []
+
+influxdb_etc_influxdb_influxdb_conf: []

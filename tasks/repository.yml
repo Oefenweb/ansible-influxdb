@@ -10,14 +10,56 @@
   tags:
     - influxdb-repository-dependencies
 
-- name: repository | add public key
-  apt_key:
-    id: "{{ item.id }}"
-    url: "{{ item.url }}"
-    state: present
-  with_items: "{{ influxdb_apt_keys }}"
+- name: repository | get python version
+  shell: python --version 2>&1 | awk '{print $2}'
+  register: _python_version
+  changed_when: false
   tags:
-    - influxdb-repository-public-key
+    - influxdb-repository-get-python-version
+
+# Old python (TLS issues)
+- block:
+  - name: repository | create (download) directory
+    file:
+      path: "{{ influxdb_downloads_path }}"
+      state: directory
+      owner: root
+      group: root
+      mode: 0755
+    tags:
+      - influxdb-repository-directory
+      - influxdb-repository-directory-create
+
+  - name: repository | download public key
+    command: >
+      curl -sSL {{ item.url }} -o {{ influxdb_downloads_path }}/{{ item.id }}.key
+    args:
+      creates: "{{ influxdb_downloads_path }}/{{ item.id }}.key"
+    with_items: "{{ influxdb_apt_keys }}"
+    tags:
+      - influxdb-repository-public-key
+
+  - name: repository | add public key
+    apt_key:
+      id: "{{ item.id }}"
+      file: "{{ influxdb_downloads_path }}/{{ item.id }}.key"
+      state: present
+    with_items: "{{ influxdb_apt_keys }}"
+    tags:
+      - influxdb-repository-public-key
+  when: _python_version.stdout | version_compare('2.7.9', '<')
+
+# New python
+- block:
+  - name: repository | add public key
+    apt_key:
+      id: "{{ item.id }}"
+      url: "{{ item.url }}"
+      state: present
+    with_items: "{{ influxdb_apt_keys }}"
+    tags:
+      - influxdb-repository-public-key
+  when: _python_version.stdout | version_compare('2.7.9', '>=')
 
 - name: repository | add
   apt_repository:

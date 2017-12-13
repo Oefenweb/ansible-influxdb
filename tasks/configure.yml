@@ -4,13 +4,7 @@
   stat:
     path: "{{ item }}/"
   register: _stat_directories
-  with_items:
-    - "{{ influxdb_influxdb_home }}"
-    - "{{ influxdb_log_dir }}"
-    - "{{ influxdb_data_dir }}"
-    - "{{ influxdb_conf_dir }}"
-    - "{{ influxdb_plugins_dir }}"
-    - "{{ influxdb_pid_file_dir }}"
+  with_items: []
   tags:
     - influxdb-configure-directories
     - influxdb-configure-directories-stat
@@ -32,21 +26,15 @@
   template:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    owner: "{{ item.owner }}"
-    group: "{{ item.group }}"
-    mode: "{{ item.mode }}"
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('0644') }}"
   notify: restart influxdb
   with_items:
-    - src: etc/influxdb/influxdb.ini.j2
-      dest: "{{ influxdb_conf_file }}"
-      owner: root
-      group: "{{ influxdb_influxdb_group }}"
-      mode: '0640'
-    - src: etc/default/influxdb-server.j2
-      dest: /etc/default/influxdb-server
-      owner: root
-      group: root
-      mode: '0644'
+    - src: etc/influxdb/influxdb.conf.j2
+      dest: /etc/influxdb/influxdb.conf
+    - src: etc/default/influxdb.j2
+      dest: /etc/default/influxdb
   tags:
     - influxdb-configure-configuration
     - influxdb-configure-configuration-files
