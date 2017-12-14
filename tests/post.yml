@@ -10,7 +10,7 @@
     - curl
 
 - name: post | test installation
-  command: curl -sL --head http://localhost:8086/ping
+  command: curl -sSf --head http://localhost:8086/ping
   register: _result
   changed_when: false
   failed_when: _result.stdout.find('204 No Content') == -1

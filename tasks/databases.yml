@@ -2,7 +2,8 @@
 ---
 - name: databases | query show
   command: >
-    curl -sS -X GET http://localhost:8086/query?q={{ 'SHOW DATABASES' | urlencode }}
+    curl -sSf -X GET
+    http://localhost:8086/query?q={{ 'SHOW DATABASES' | urlencode }}
   register: _show_databases
   changed_when: false
   tags:
@@ -22,7 +23,7 @@
 
 - name: databases | create
   command: >
-    curl -sS -X POST
+    curl -sSf -X POST
     http://localhost:8086/query?q={{ ('CREATE DATABASE ' + item.name + (' WITH DURATION ' + item.duration if item.duration is defined else '') ) | urlencode }}
   with_items: "{{ influxdb_databases_present }}"
   when: item.name not in _databases_present
@@ -31,7 +32,7 @@
 
 - name: databases | drop
   command: >
-    curl -sS -X POST
+    curl -sSf -X POST
     http://localhost:8086/query?q={{ ('DROP DATABASE ' + item) | urlencode }}
   with_items: "{{ influxdb_databases_absent }}"
   when: item in _databases_present

@@ -12,11 +12,11 @@
     - influxdb
     - influxdb-install
 
-#- include: configure.yml
-#  tags:
-#    - configuration
-#    - influxdb
-#    - influxdb-configure
+- include: configure.yml
+  tags:
+    - configuration
+    - influxdb
+    - influxdb-configure
 
 - include: databases.yml
   tags:

@@ -4,7 +4,10 @@
   stat:
     path: "{{ item }}/"
   register: _stat_directories
-  with_items: []
+  with_items:
+    - "{{ influxdb_meta_dir }}"
+    - "{{ influxdb_data_dir }}"
+    - "{{ influxdb_data_wal_dir }}"
   tags:
     - influxdb-configure-directories
     - influxdb-configure-directories-stat
@@ -13,9 +16,9 @@
   file:
     path: "{{ item.item }}"
     state: directory
-    owner: "{{ influxdb_influxdb_user }}"
-    group: "{{ influxdb_influxdb_group }}"
-    mode: 0755
+    owner: "{{ influxdb_user }}"
+    group: "{{ influxdb_group }}"
+    mode: 0750
   with_items: "{{ _stat_directories.results }}"
   when: item.stat.exists == false
   tags:

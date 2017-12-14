@@ -12,6 +12,17 @@ None
 
 * `influxdb_install`: [default: `[]`]: Additional packages to install
 
+* `influxdb_user`: [default: `grafana`]: User to run daemon as
+* `influxdb_group`: [default: `grafana`]: Group to run daemon as
+
+* `influxdb_meta_dir`: [default: `/var/lib/influxdb/meta`]: Meta directory
+* `influxdb_data_dir`: [default: `/var/lib/influxdb/data`]: Data directory
+* `influxdb_data_wall_dir`: [default: `/var/lib/influxdb/wal`]: Write-ahead logging (WAL) directory
+
+* `influxdb_etc_default`: [`default: `[]`]: Content (lines) of `/etc/default/influxdb`
+
+* `influxdb_etc_influxdb_influxdb_conf`: [see: `defaults/main.yml]: Content (lines) of `/etc/influxdb/influxdb.conf` ([see](https://docs.influxdata.com/influxdb/v1.4/administration/config/))
+
 * `influxdb_databases_present`: [default: `[]`]: Databases to `CREATE`
 * `influxdb_databases_present.{n}.name`: [required]: The name of the database
 * `influxdb_databases_present.{n}.duration`: [optional]: Determines how long InfluxDB keeps the data (e.g. `1d`, `INF`)
@@ -41,7 +52,15 @@ None
 - hosts: all
   roles:
     - influxdb
-  vars: {}
+  vars:
+    influxdb_etc_influxdb_influxdb_conf:
+      - |
+        bind-address = “127.0.0.1:8088”
+        [meta]
+          dir = "{{ influxdb_meta_dir }}"
+        [data]
+          dir = "{{ influxdb_data_dir }}"
+          wal-dir = "{{ influxdb_data_wal_dir }}"
 ```
 
 #### License

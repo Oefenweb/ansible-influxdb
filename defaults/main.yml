@@ -2,9 +2,25 @@
 ---
 influxdb_install: []
 
-influxdb_databases_present: []
-influxdb_databases_absent: []
+influxdb_user: influxdb
+influxdb_group: influxdb
+
+influxdb_meta_dir: /var/lib/influxdb/meta
+influxdb_data_dir: /var/lib/influxdb/data
+influxdb_data_wal_dir: /var/lib/influxdb/wal
+
+# influxdb_admin_username: ''
+# influxdb_admin_password: ''
 
 influxdb_etc_default: []
 
-influxdb_etc_influxdb_influxdb_conf: []
+influxdb_etc_influxdb_influxdb_conf:
+  - |
+    [meta]
+      dir = "{{ influxdb_meta_dir }}"
+    [data]
+      dir = "{{ influxdb_data_dir }}"
+      wal-dir = "{{ influxdb_data_wal_dir }}"
+
+influxdb_databases_present: []
+influxdb_databases_absent: []
