@@ -1,5 +1,20 @@
-# vars file for ubuntu-1604-influxdb
+# vars file for influxdb
 ---
-ubuntu_1604_influxdb_install:
-  - python-httplib2
+influxdb_dependencies_pre:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+
+influxdb_apt_keys:
+  - id: 684A14CF2582E0C5
+    url: https://repos.influxdata.com/influxdb.key
+
+influxdb_downloads_path: /var/lib/ansible/influxdb/downloads
+
+influxdb_repositories:
+  - type: deb
+    url: "https://repos.influxdata.com/{{ ansible_lsb.id | lower }} {{ ansible_lsb.codename }}"
+    component: stable
+
+influxdb_dependencies:
   - influxdb

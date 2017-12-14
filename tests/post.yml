@@ -1,0 +1,16 @@
+# post test file for influxdb
+---
+- name: post | install dependencies
+  apt:
+    name: "{{ item }}"
+    state: "{{ apt_install_state | default('latest') }}"
+    update_cache: true
+    cache_valid_time: "{{ apt_update_cache_valid_time | default(3600) }}"
+  with_items:
+    - curl
+
+- name: post | test installation
+  command: curl -sSf --head http://localhost:8086/ping
+  register: _result
+  changed_when: false
+  failed_when: _result.stdout.find('204 No Content') == -1
