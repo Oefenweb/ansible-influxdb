@@ -18,4 +18,3 @@ influxdb_repositories:
 
 influxdb_dependencies:
   - influxdb
-  - python-httplib2

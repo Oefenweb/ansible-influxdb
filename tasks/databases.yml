@@ -2,17 +2,17 @@
 ---
 - name: databases | query show
   command: >
-    curl -sSL http://localhost:8086/query?q={{ 'SHOW DATABASES' | urlencode }}
+    curl -sS -X GET http://localhost:8086/query?q={{ 'SHOW DATABASES' | urlencode }}
   register: _show_databases
   changed_when: false
   tags:
     - influxdb-databases-query-show
 
-- name: databases | set show
+- name: databases | format show
   set_fact:
     _databases_present: "{{ _show_databases.stdout | from_json }}"
   tags:
-    - influxdb-databases-set-show
+    - influxdb-databases-format-show
 
 - name: databases | set show
   set_fact:
@@ -21,26 +21,18 @@
     - influxdb-databases-set-show
 
 - name: databases | create
-  uri:
-    url: "http://localhost:8086/query?q={{ ('CREATE DATABASE ' + item.name + (' WITH DURATION ' + item.duration if item.duration is defined else '') ) | urlencode }}"
-    method: 'POST'
-    user: "{{ influxdb_admin_username | default(omit) }}"
-    password: "{{ influxdb_admin_password | default(omit) }}"
-    status_code: 200
-  changed_when: true
+  command: >
+    curl -sS -X POST
+    http://localhost:8086/query?q={{ ('CREATE DATABASE ' + item.name + (' WITH DURATION ' + item.duration if item.duration is defined else '') ) | urlencode }}
   with_items: "{{ influxdb_databases_present }}"
   when: item.name not in _databases_present
   tags:
     - influxdb-databases-create
 
 - name: databases | drop
-  uri:
-    url: "http://localhost:8086/query?q={{ ('DROP DATABASE ' + item) | urlencode }}"
-    method: 'POST'
-    user: "{{ influxdb_admin_username | default(omit) }}"
-    password: "{{ influxdb_admin_password | default(omit) }}"
-    status_code: 200
-  changed_when: true
+  command: >
+    curl -sS -X POST
+    http://localhost:8086/query?q={{ ('DROP DATABASE ' + item) | urlencode }}
   with_items: "{{ influxdb_databases_absent }}"
   when: item in _databases_present
   tags:
