@@ -1,21 +1,22 @@
 # tasks file for influxdb
 ---
 - name: databases | query show
-  uri:
-    url: "http://localhost:8086/query?q={{ 'SHOW DATABASES' | urlencode }}"
-    method: POST
-    return_content: true
-    user: "{{ influxdb_admin_username | default(omit) }}"
-    password: "{{ influxdb_admin_password | default(omit) }}"
-    status_code: 200
+  command: >
+    curl -sSL http://localhost:8086/query?q={{ 'SHOW DATABASES' | urlencode }}
   register: _show_databases
+  changed_when: false
   tags:
     - influxdb-databases-query-show
 
-# TODO: Use json query?
 - name: databases | set show
   set_fact:
-    _databases_present: "{{ _show_databases['json']['results'][0]['series'][0]['values'] | default({values: [[]]}) | map(attribute=0) | list }}"
+    _databases_present: "{{ _show_databases.stdout | from_json }}"
+  tags:
+    - influxdb-databases-set-show
+
+- name: databases | set show
+  set_fact:
+    _databases_present: "{{ _databases_present['results'][0]['series'][0].get('values', {}) | map(attribute=0) | list }}"
   tags:
     - influxdb-databases-set-show
 
