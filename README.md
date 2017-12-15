@@ -55,7 +55,7 @@ None
   vars:
     influxdb_etc_influxdb_influxdb_conf:
       - |
-        bind-address = “127.0.0.1:8088”
+        bind-address = "127.0.0.1:8088"
         [meta]
           dir = "{{ influxdb_meta_dir }}"
         [data]
