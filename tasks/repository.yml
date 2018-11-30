@@ -47,7 +47,7 @@
     with_items: "{{ influxdb_apt_keys }}"
     tags:
       - influxdb-repository-public-key
-  when: _python_version.stdout | version_compare('2.7.9', '<')
+  when: _python_version.stdout is version('2.7.9', '<')
 
 # New python
 - block:
@@ -59,7 +59,7 @@
     with_items: "{{ influxdb_apt_keys }}"
     tags:
       - influxdb-repository-public-key
-  when: _python_version.stdout | version_compare('2.7.9', '>=')
+  when: _python_version.stdout is version('2.7.9', '>=')
 
 - name: repository | add
   apt_repository:
