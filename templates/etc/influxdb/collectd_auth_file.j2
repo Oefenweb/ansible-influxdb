@@ -1,0 +1,5 @@
+# {{ ansible_managed }}
+
+{% for item in influxdb_collectd_users %}
+{{ item.username }}: {{ item.password }}
+{% endfor %}

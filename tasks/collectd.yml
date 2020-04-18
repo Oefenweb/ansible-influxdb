@@ -1,0 +1,23 @@
+# tasks file for influxdb
+---
+- name: collectd | create collectd_auth_file
+  template:
+    src: etc/influxdb/collectd_auth_file.j2
+    dest: /etc/influxdb/collectd_auth_file
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('0644') }}"
+  when: influxdb_collectd_users | default([]) | length > 0
+  notify: restart influxdb
+  tags:
+    - influxdb-collectd-create
+    - influxdb-collectd-create-auth-file
+
+- name: collectd | remove collectd_auth_file
+  file:
+    path: /etc/influxdb/collectd_auth_file
+    state: absent
+  when: influxdb_collectd_users | default([]) | length < 1
+  tags:
+    - influxdb-collectd-remove
+    - influxdb-collectd-remove-auth-file

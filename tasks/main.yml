@@ -24,6 +24,12 @@
     - influxdb
     - influxdb-databases
 
+- include: collectd.yml
+  tags:
+    - configuration
+    - influxdb
+    - influxdb-collectd
+
 - name: start and enable service
   service:
     name: influxdb
