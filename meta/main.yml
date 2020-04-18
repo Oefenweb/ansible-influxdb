@@ -1,6 +1,7 @@
 # meta file for influxdb
 ---
 galaxy_info:
+  role_name: influxdb
   author: Mischa ter Smitten
   company: Oefenweb.nl B.V.
   description: Set up (the latest version of) InfluxDB in Debian-like systems
