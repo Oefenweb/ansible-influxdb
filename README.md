@@ -12,8 +12,8 @@ None
 
 * `influxdb_install`: [default: `[]`]: Additional packages to install
 
-* `influxdb_user`: [default: `grafana`]: User to run daemon as
-* `influxdb_group`: [default: `grafana`]: Group to run daemon as
+* `influxdb_user`: [default: `influxdb`]: User to run daemon as
+* `influxdb_group`: [default: `influxdb`]: Group to run daemon as
 
 * `influxdb_meta_dir`: [default: `/var/lib/influxdb/meta`]: Meta directory
 * `influxdb_data_dir`: [default: `/var/lib/influxdb/data`]: Data directory
