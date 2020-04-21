@@ -2,11 +2,11 @@
 ---
 - name: collectd | create collectd_auth_file
   template:
-    src: etc/influxdb/collectd_auth_file.j2
-    dest: /etc/influxdb/collectd_auth_file
-    owner: "{{ item.owner | default('root') }}"
-    group: "{{ item.group | default('root') }}"
-    mode: "{{ item.mode | default('0644') }}"
+    src: "{{ influxdb_collectd_auth_file | ltrim('/') }}".j2
+    dest: "{{ influxdb_collectd_auth_file }}"
+    owner: "{{ item.owner | default('influxdb') }}"
+    group: "{{ item.group | default('influxdb') }}"
+    mode: "{{ item.mode | default('0640') }}"
   when: influxdb_collectd_users | default([]) | length > 0
   notify: restart influxdb
   tags:
@@ -15,7 +15,7 @@
 
 - name: collectd | remove collectd_auth_file
   file:
-    path: /etc/influxdb/collectd_auth_file
+    path: "{{ influxdb_collectd_auth_file }}"
     state: absent
   when: influxdb_collectd_users | default([]) | length < 1
   tags:
