@@ -2,7 +2,7 @@
 ---
 - name: collectd | create collectd_auth_file
   template:
-    src: "{{ influxdb_collectd_auth_file | ltrim('/') }}".j2
+    src: "{{ influxdb_collectd_auth_file.lstrip('/') }}.j2"
     dest: "{{ influxdb_collectd_auth_file }}"
     owner: "{{ influxdb_user }}"
     group: "{{ influxdb_group }}"
