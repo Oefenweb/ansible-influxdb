@@ -18,3 +18,5 @@ influxdb_repositories:
 
 influxdb_dependencies:
   - influxdb
+
+influxdb_collectd_auth_file: /etc/influxdb/collectd_auth_file

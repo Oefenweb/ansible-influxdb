@@ -30,6 +30,10 @@ None
 * `influxdb_databases_absent`: [default: `[{name: test}]`]: Databases to `DROP`
 * `influxdb_databases_absent.{n}.name`: [required]: The name of the database
 
+* `influxdb_collectd_users`: [default: `[]`]: Collectd users
+* `influxdb_collectd_users.{n}.username`: [required]: Username
+* `influxdb_collectd_users.{n}.password`: [required]: Password
+
 ## Dependencies
 
 None
@@ -45,7 +49,7 @@ None
     - influxdb
 ```
 
-##### Custon configuration
+##### Custom configuration
 
 ```yaml
 ---
@@ -61,6 +65,34 @@ None
         [data]
           dir = "{{ influxdb_data_dir }}"
           wal-dir = "{{ influxdb_data_wal_dir }}"
+```
+
+##### Custom configuration with collectd users and encryption
+
+```yaml
+---
+- hosts: all
+  roles:
+    - influxdb
+  vars:
+    influxdb_etc_influxdb_influxdb_conf:
+      - |
+        bind-address = "127.0.0.1:8088"
+        [meta]
+          dir = "{{ influxdb_meta_dir }}"
+        [data]
+          dir = "{{ influxdb_data_dir }}"
+          wal-dir = "{{ influxdb_data_wal_dir }}"
+        [[collectd]]
+          enabled = true
+          bind-address = ":25826"
+          database = "collectd"
+          typesdb = "/usr/share/collectd/types.db"
+          security-level = "encrypt"
+          auth-file = "{{ influxdb_collectd_auth_file }}"
+    influxdb_collectd_users:
+      - username: foo
+        password: bar
 ```
 
 #### License

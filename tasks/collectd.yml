@@ -1,0 +1,23 @@
+# tasks file for influxdb
+---
+- name: collectd | create collectd_auth_file
+  template:
+    src: "{{ influxdb_collectd_auth_file | ltrim('/') }}".j2
+    dest: "{{ influxdb_collectd_auth_file }}"
+    owner: "{{ influxdb_user }}"
+    group: "{{ influxdb_group }}"
+    mode: 0640
+  when: influxdb_collectd_users | default([]) | length > 0
+  notify: restart influxdb
+  tags:
+    - influxdb-collectd-create
+    - influxdb-collectd-create-auth-file
+
+- name: collectd | remove collectd_auth_file
+  file:
+    path: "{{ influxdb_collectd_auth_file }}"
+    state: absent
+  when: influxdb_collectd_users | default([]) | length < 1
+  tags:
+    - influxdb-collectd-remove
+    - influxdb-collectd-remove-auth-file
