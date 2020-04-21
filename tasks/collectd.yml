@@ -4,8 +4,8 @@
   template:
     src: "{{ influxdb_collectd_auth_file | ltrim('/') }}".j2
     dest: "{{ influxdb_collectd_auth_file }}"
-    owner: influxdb
-    group: influxdb
+    owner: "{{ influxdb_user }}"
+    group: "{{ influxdb_group }}"
     mode: 0640
   when: influxdb_collectd_users | default([]) | length > 0
   notify: restart influxdb
