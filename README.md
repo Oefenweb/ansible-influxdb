@@ -89,7 +89,7 @@ None
           database = "collectd"
           typesdb = "/usr/share/collectd/types.db"
           security-level = "encrypt"
-          auth-file = "/etc/influxdb/collectd_auth_file"
+          auth-file = "{{ influxdb_collectd_auth_file }}"
     influxdb_collectd_users:
       - username: foo
         password: bar
