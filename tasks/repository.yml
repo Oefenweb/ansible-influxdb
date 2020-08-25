@@ -2,16 +2,16 @@
 ---
 - name: repository | dependencies
   apt:
-    name: "{{ item }}"
+    name: "{{ influxdb_dependencies_pre }}"
     state: "{{ apt_install_state | default('latest') }}"
     update_cache: true
     cache_valid_time: "{{ apt_update_cache_valid_time | default(3600) }}"
-  with_items: "{{ influxdb_dependencies_pre }}"
   tags:
     - influxdb-repository-dependencies
 
 - name: repository | get python version
-  shell: python --version 2>&1 | awk '{print $2}'
+  shell: >
+    python --version 2>&1 | awk '{print $2}'
   register: _python_version
   changed_when: false
   tags:
@@ -35,6 +35,7 @@
       curl -sSL {{ item.url }} -o {{ influxdb_downloads_path }}/{{ item.id }}.key
     args:
       creates: "{{ influxdb_downloads_path }}/{{ item.id }}.key"
+      warn: false
     with_items: "{{ influxdb_apt_keys }}"
     tags:
       - influxdb-repository-public-key
@@ -66,6 +67,7 @@
     repo: "{{ item.type }} {{ item.url }} {{ item.component }}"
     state: present
     update_cache: true
+    mode: 0644
   with_items: "{{ influxdb_repositories }}"
   tags:
     - influxdb-repository-add

@@ -2,9 +2,8 @@
 ---
 - name: install | dependencies
   apt:
-    name: "{{ item }}"
+    name: "{{ influxdb_dependencies }}"
     state: "{{ apt_install_state | default('latest') }}"
-  with_items: "{{ influxdb_dependencies }}"
   tags:
     - influxdb-install-dependencies
 
@@ -18,8 +17,7 @@
 
 - name: install | additional
   apt:
-    name: "{{ item }}"
+    name: "{{ influxdb_install }}"
     state: "{{ apt_install_state | default('latest') }}"
-  with_items: "{{ influxdb_install }}"
   tags:
     - influxdb-install-additional

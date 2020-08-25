@@ -20,7 +20,7 @@
     group: "{{ influxdb_group }}"
     mode: 0750
   with_items: "{{ _stat_directories.results }}"
-  when: item.stat.exists == false
+  when: not item.stat.exists
   tags:
     - influxdb-configure-directories
     - influxdb-configure-directories-create

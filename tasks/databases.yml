@@ -4,6 +4,8 @@
   command: >
     curl -sSf -X GET
     http://localhost:8086/query?q={{ 'SHOW DATABASES' | urlencode }}
+  args:
+    warn: false
   register: _show_databases
   changed_when: false
   tags:
@@ -25,6 +27,8 @@
   command: >
     curl -sSf -X POST
     http://localhost:8086/query?q={{ ('CREATE DATABASE ' + item.name + (' WITH DURATION ' + item.duration if item.duration is defined else '') ) | urlencode }}
+  args:
+    warn: false
   with_items: "{{ influxdb_databases_present }}"
   when: item.name not in _databases_present
   tags:
@@ -34,6 +38,8 @@
   command: >
     curl -sSf -X POST
     http://localhost:8086/query?q={{ ('DROP DATABASE ' + item) | urlencode }}
+  args:
+    warn: false
   with_items: "{{ influxdb_databases_absent }}"
   when: item in _databases_present
   tags:
