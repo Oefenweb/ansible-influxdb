@@ -3,11 +3,11 @@
 - hosts: all
   remote_user: vagrant
   become: true
+  pre_tasks:
+    - name: include vars
+      include_vars: "{{ playbook_dir }}/vars/main.yml"
   roles:
     - ../../
   post_tasks:
-    - include: post.yml
-  vars:
-    influxdb_databases_present:
-      - name: foo
-      - name: bar
+    - name: include tasks
+      include: "{{ playbook_dir }}/tasks/post.yml"
