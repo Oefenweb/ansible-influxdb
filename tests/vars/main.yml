@@ -1,0 +1,5 @@
+# vars file for influxdb
+---
+influxdb_databases_present:
+  - name: foo
+  - name: bar

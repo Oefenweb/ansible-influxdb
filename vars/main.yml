@@ -1,8 +1,9 @@
 # vars file for influxdb
 ---
 influxdb_dependencies_pre:
+  - software-properties-common
+  - dirmngr
   - apt-transport-https
-  - ca-certificates
   - curl
 
 influxdb_apt_keys:
@@ -13,7 +14,7 @@ influxdb_downloads_path: /var/lib/ansible/influxdb/downloads
 
 influxdb_repositories:
   - type: deb
-    url: "https://repos.influxdata.com/{{ ansible_lsb.id | lower }} {{ ansible_lsb.codename }}"
+    url: "https://repos.influxdata.com/{{ ansible_distribution | lower }} {{ ansible_distribution_release }}"
     component: stable
 
 influxdb_dependencies:

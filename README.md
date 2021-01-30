@@ -1,12 +1,16 @@
 ## influxdb
 
-[![Build Status](https://travis-ci.org/Oefenweb/ansible-influxdb.svg?branch=master)](https://travis-ci.org/Oefenweb/ansible-influxdb) [![Ansible Galaxy](http://img.shields.io/badge/ansible--galaxy-influxdb-blue.svg)](https://galaxy.ansible.com/Oefenweb/influxdb)
+[![CI](https://github.com/Oefenweb/ansible-influxdb/workflows/CI/badge.svg)](https://github.com/Oefenweb/ansible-influxdb/actions?query=workflow%3ACI)
+[![Ansible Galaxy](http://img.shields.io/badge/ansible--galaxy-influxdb-blue.svg)](https://galaxy.ansible.com/Oefenweb/influxdb)
 
 Set up (the latest version of) [InfluxDB](https://www.influxdata.com/) in Debian-like systems.
 
 #### Requirements
 
-None
+* `software-properties-common` (will be installed)
+* `dirmngr` (will be installed)
+* `apt-transport-https` (will be installed)
+* `curl` (will be installed)
 
 #### Variables
 
