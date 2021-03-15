@@ -1,4 +1,4 @@
-# tasks file for influxdb
+# tasks file
 ---
 - name: databases | query show
   command: >

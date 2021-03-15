@@ -1,4 +1,4 @@
-# defaults file for influxdb
+# defaults file
 ---
 influxdb_install: []
 

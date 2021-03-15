@@ -1,4 +1,4 @@
-# tasks file for influxdb
+# tasks file
 ---
 - name: collectd | create collectd_auth_file
   template:

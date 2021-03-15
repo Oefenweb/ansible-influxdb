@@ -1,4 +1,4 @@
-# handlers file for influxdb
+# handlers file
 ---
 - name: restart influxdb
   service:

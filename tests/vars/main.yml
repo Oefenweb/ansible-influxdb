@@ -1,4 +1,4 @@
-# vars file for influxdb
+# vars file
 ---
 influxdb_databases_present:
   - name: foo

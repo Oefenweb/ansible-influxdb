@@ -1,4 +1,4 @@
-# post test file for influxdb
+# post test file
 ---
 - name: install test dependencies
   apt:
