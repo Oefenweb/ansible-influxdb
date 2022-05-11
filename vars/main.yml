@@ -9,8 +9,6 @@ influxdb_dependencies_pre:
 influxdb_apt_keys:
   - id: 684A14CF2582E0C5
     keyserver: keyserver.ubuntu.com
-  - id: AB162277E8EE6FD0
-    keyserver: keyserver.ubuntu.com
 
 influxdb_downloads_path: /var/lib/ansible/influxdb/downloads
 
