@@ -1,7 +1,7 @@
 # tasks file
 ---
 - name: collectd | create collectd_auth_file
-  template:
+  ansible.builtin.template:
     src: "{{ influxdb_collectd_auth_file.lstrip('/') }}.j2"
     dest: "{{ influxdb_collectd_auth_file }}"
     owner: "{{ influxdb_user }}"
@@ -14,7 +14,7 @@
     - influxdb-collectd-create-auth-file
 
 - name: collectd | remove collectd_auth_file
-  file:
+  ansible.builtin.file:
     path: "{{ influxdb_collectd_auth_file }}"
     state: absent
   when: influxdb_collectd_users | default([]) | length < 1

@@ -1,14 +1,14 @@
 # tasks file
 ---
 - name: install | dependencies
-  apt:
+  ansible.builtin.apt:
     name: "{{ influxdb_dependencies }}"
     state: "{{ apt_install_state | default('latest') }}"
   tags:
     - influxdb-install-dependencies
 
 - name: install | dependencies | check service
-  service:
+  ansible.builtin.service:
     name: influxdb
     state: started
   tags:
@@ -16,7 +16,7 @@
     - influxdb-install-dependencies-check
 
 - name: install | additional
-  apt:
+  ansible.builtin.apt:
     name: "{{ influxdb_install }}"
     state: "{{ apt_install_state | default('latest') }}"
   tags:
