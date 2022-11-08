@@ -1,7 +1,7 @@
 # tasks file
 ---
 - name: databases | query show
-  command: >
+  ansible.builtin.command: >
     curl -sSf -X GET
     http://localhost:8086/query?q={{ 'SHOW DATABASES' | urlencode }}
   args:
@@ -12,21 +12,21 @@
     - influxdb-databases-query-show
 
 - name: databases | format show
-  set_fact:
+  ansible.builtin.set_fact:
     _databases_present: "{{ _show_databases.stdout | from_json }}"
   tags:
     - influxdb-databases-format-show
 
 - name: databases | set show
-  set_fact:
+  ansible.builtin.set_fact:
     _databases_present: "{{ _databases_present['results'][0]['series'][0].get('values', {}) | map(attribute=0) | list }}"
   tags:
     - influxdb-databases-set-show
 
 - name: databases | create
-  command: >
+  ansible.builtin.command: >
     curl -sSf -X POST
-    http://localhost:8086/query?q={{ ('CREATE DATABASE ' + item.name + (' WITH DURATION ' + item.duration if item.duration is defined else '') ) | urlencode }}
+    http://localhost:8086/query?q={{ ('CREATE DATABASE ' + item.name + (' WITH DURATION ' + item.duration if item.duration is defined else '')) | urlencode }}
   args:
     warn: false
   with_items: "{{ influxdb_databases_present }}"
@@ -35,7 +35,7 @@
     - influxdb-databases-create
 
 - name: databases | drop
-  command: >
+  ansible.builtin.command: >
     curl -sSf -X POST
     http://localhost:8086/query?q={{ ('DROP DATABASE ' + item) | urlencode }}
   args:
