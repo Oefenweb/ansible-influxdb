@@ -1,11 +1,9 @@
 # tasks file
 ---
-- name: databases | query show
+- name: databases | query show  # noqa command-instead-of-module
   ansible.builtin.command: >
     curl -sSf -X GET
     http://localhost:8086/query?q={{ 'SHOW DATABASES' | urlencode }}
-  args:
-    warn: false
   register: _show_databases
   changed_when: false
   tags:
@@ -23,23 +21,19 @@
   tags:
     - influxdb-databases-set-show
 
-- name: databases | create
+- name: databases | create  # noqa command-instead-of-module
   ansible.builtin.command: >
     curl -sSf -X POST
     http://localhost:8086/query?q={{ ('CREATE DATABASE ' + item.name + (' WITH DURATION ' + item.duration if item.duration is defined else '')) | urlencode }}
-  args:
-    warn: false
   with_items: "{{ influxdb_databases_present }}"
   when: item.name not in _databases_present
   tags:
     - influxdb-databases-create
 
-- name: databases | drop
+- name: databases | drop  # noqa command-instead-of-module
   ansible.builtin.command: >
     curl -sSf -X POST
     http://localhost:8086/query?q={{ ('DROP DATABASE ' + item) | urlencode }}
-  args:
-    warn: false
   with_items: "{{ influxdb_databases_absent }}"
   when: item in _databases_present
   tags:
