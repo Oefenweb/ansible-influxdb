@@ -14,8 +14,8 @@ influxdb_downloads_path: /var/lib/ansible/influxdb/downloads
 
 influxdb_repositories:
   - type: deb
-    url: "https://repos.influxdata.com/debian {{ ansible_distribution_release }}"
-    component: stable
+    url: 'https://repos.influxdata.com/debian stable'
+    component: main
 
 influxdb_dependencies:
   - influxdb
