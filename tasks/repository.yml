@@ -9,6 +9,15 @@
   tags:
     - influxdb-repository-dependencies
 
+- name: repository | remove old public key
+  ansible.builtin.apt_key:
+    id: "{{ item.id }}"
+    keyserver: "{{ item.keyserver }}"
+    state: absent
+  with_items: "{{ influxdb_old_apt_keys }}"
+  tags:
+    - influxdb-repository-old-public-key
+
 - name: repository | add public key
   ansible.builtin.apt_key:
     id: "{{ item.id }}"
