@@ -27,6 +27,7 @@
     http://localhost:8086/query?q={{ ('CREATE DATABASE ' + item.name + (' WITH DURATION ' + item.duration if item.duration is defined else '')) | urlencode }}
   with_items: "{{ influxdb_databases_present }}"
   when: item.name not in _databases_present
+  changed_when: true
   tags:
     - influxdb-databases-create
 
@@ -36,5 +37,6 @@
     http://localhost:8086/query?q={{ ('DROP DATABASE ' + item) | urlencode }}
   with_items: "{{ influxdb_databases_absent }}"
   when: item in _databases_present
+  changed_when: true
   tags:
     - influxdb-databases-drop
