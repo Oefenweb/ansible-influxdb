@@ -50,7 +50,7 @@ None
 ---
 - hosts: all
   roles:
-    - influxdb
+    - oefenweb.influxdb
 ```
 
 ##### Custom configuration
@@ -59,7 +59,7 @@ None
 ---
 - hosts: all
   roles:
-    - influxdb
+    - oefenweb.influxdb
   vars:
     influxdb_etc_influxdb_influxdb_conf:
       - |
@@ -77,7 +77,7 @@ None
 ---
 - hosts: all
   roles:
-    - influxdb
+    - oefenweb.influxdb
   vars:
     influxdb_etc_influxdb_influxdb_conf:
       - |
