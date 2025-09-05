@@ -18,7 +18,7 @@
     state: directory
     owner: "{{ influxdb_user }}"
     group: "{{ influxdb_group }}"
-    mode: 0750
+    mode: '0750'
   with_items: "{{ _stat_directories.results }}"
   when: not item.stat.exists
   tags:
