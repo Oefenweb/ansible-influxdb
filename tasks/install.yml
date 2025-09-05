@@ -11,9 +11,24 @@
   ansible.builtin.service:
     name: influxdb
     state: started
+  failed_when: false
   tags:
     - influxdb-install-dependencies
     - influxdb-install-dependencies-check
+
+- name: debug
+  failed_when: false
+  tags:
+    - influxdb-install-dependencies
+    - influxdb-install-dependencies-check
+  block:
+    - name: debug | 1
+      ansible.builtin.shell: >
+        systemctl status influxdb.service
+
+    - name: debug | 2
+      ansible.builtin.shell: >
+        journalctl -xe
 
 - name: install | additional
   ansible.builtin.apt:
