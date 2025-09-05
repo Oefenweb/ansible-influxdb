@@ -19,5 +19,6 @@ influxdb_dependencies_pre:
 
 influxdb_dependencies:
   - influxdb
+  - curl
 
 influxdb_collectd_auth_file: /etc/influxdb/collectd_auth_file
