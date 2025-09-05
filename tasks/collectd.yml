@@ -6,7 +6,7 @@
     dest: "{{ influxdb_collectd_auth_file }}"
     owner: "{{ influxdb_user }}"
     group: "{{ influxdb_group }}"
-    mode: 0640
+    mode: '0640'
   when: influxdb_collectd_users | default([]) | length > 0
   notify: restart influxdb
   tags:
